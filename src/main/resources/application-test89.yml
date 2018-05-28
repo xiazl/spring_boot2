@@ -28,7 +28,7 @@ spring:
       pool:
         max-idle: 100
         max-total: 600
-        max-wait: 1
+        max-wait: ms
 
 # MyBatis
 mybatis:

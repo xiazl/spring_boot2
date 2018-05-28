@@ -7,12 +7,13 @@ spring:
     cluster:
       max-redirects: 3
       nodes: 172.16.10.210:7001,172.16.10.210:7002,172.16.10.210:7003
+    database: 0
     jedis:
       pool:
          max-idle: 100
          max-total: 600
-         max-wait: 1000
-    timeout: 3000
+         max-wait: 1000ms
+    timeout: 3000ms
 
 server:
   server.context-path: /
