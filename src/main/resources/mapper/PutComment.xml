@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fly.caipiao.comment.mapper.PutCommentMapper">
+   <resultMap id="BaseResultMap" type="com.fly.caipiao.comment.entity.PutComment" >
+      <id column="id" property="id" />
+       <result column="user_id" property="userId" />
+       <result column="parent_id" property="parentId"/>
+       <result column="logo" property="logo"/>
+       <result column="type" property="type"/>
+       <result column="nickname" property="nickname"/>
+       <result column="content" property="content"/>
+       <result column="create_time" property="createTime"/>
+   </resultMap>
+
+    <resultMap id="responseMap" type="com.fly.caipiao.comment.web.vo.response.CommentResponseVO">
+        <id column="id" property="id" />
+        <result column="user_id" property="userId" />
+        <result column="logo" property="logo" />
+        <result column="nickname" property="nickname"/>
+        <result column="content" property="content"/>
+        <result column="create_time" property="createTime"/>
+        <collection property="contents" ofType="com.fly.caipiao.comment.web.vo.CommentVO">
+            <id column="rep_id" property="id" />
+            <result column="rep_user_id" property="userId" />
+            <result column="rep_logo" property="logo" />
+            <result column="rep_nickname" property="nickname" />
+            <result column="rep_content" property="content" />
+            <result column="rep_create_time" property="createTime"/>
+        </collection>
+        <collection property="medias" ofType="com.fly.caipiao.comment.web.vo.MediaVO">
+            <id column="med_id" property="id" />
+            <result column="file_url" property="fileUrl" />
+            <result column="file_name" property="fileName"/>
+            <result column="file_size" property="fileSize"/>
+        </collection>
+        <collection property="likes" ofType="com.fly.caipiao.comment.web.vo.HitVO">
+            <id column="likes_nickname" property="nickname"/>
+        </collection>
+    </resultMap>
+    
+   <sql id="Base_Column_List">
+    id,
+    user_id,
+    logo,
+    nickname,
+    content,
+    like_num
+  </sql>
+
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into put_comment(user_id,parent_id,logo,type,nickname,content,create_time)
+        values (#{userId},#{parentId},#{logo},#{type},#{nickname},#{content},#{createTime})
+    </insert>
+
+    <update id="updateHit">
+        update put_comment set like_num = like_num + 1
+        where id = #{id}
+    </update>
+
+    <select id="listComment" resultMap="responseMap">
+        select com.id,com.user_id as user_id,com.nickname,com.logo,com.content,com.create_time,
+        rep.id as rep_id,rep.user_id as rep_user_id,rep.logo as rep_logo,rep.nickname as rep_nickname,
+        rep.content as rep_content,rep.create_time as rep_create_time,likes.nickname as likes_nickname,
+        med.id as med_id,med.file_url,med.file_size,med.file_name,med.file_url,med.file_name,med.file_size
+        from (
+          select id,user_id,nickname,logo,content,create_time
+          from put_comment where parent_id is null and type = 1
+            <if test="userId != null">
+               user_id = #{userId}
+            </if> limit #{startRow},#{pageSize}) com
+        left join put_comment rep on rep.parent_id = com.id and rep.type = 1
+        left join put_comment likes on likes.parent_id = com.id and likes.type = 0
+        left join put_media med on com.id = med.comment_id
+    </select>
+
+
+</mapper>

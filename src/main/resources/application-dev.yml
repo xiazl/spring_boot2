@@ -1,0 +1,47 @@
+server:
+  server.context-path: /
+  port: 8080
+  session-timeout: 60
+  tomcat.uri-encoding: UTF-8
+
+datasource:
+  type: com.alibaba.druid.pool.DruidDataSource # 使用druid数据源
+  write:
+    driverClassName: com.mysql.jdbc.Driver
+    url: jdbc:mysql://172.16.10.210:3306/lottery_base?useUnicode=true&amp;characterEncoding=utf-8
+    username: caipiao
+    password: F%46tff%^#@e
+  read:
+    driverClassName: com.mysql.jdbc.Driver
+    url: jdbc:mysql://172.16.10.210:3306/lottery_base?useUnicode=true&amp;characterEncoding=utf-8
+    username: caipiao
+    password: F%46tff%^#@e
+spring:
+  cache:
+    redis:
+      namespace: comment
+  redis:
+    cluster:
+        nodes: 172.16.10.210:7001,172.16.10.210:7002,172.16.10.210:7003
+        max-redirects: 3
+    jedis:
+      pool:
+        max-idle: 100
+        max-total: 600
+        max-wait: 1
+
+# MyBatis
+mybatis:
+    typeAliasesPackage: com.fly.caipiao.comment.**.entity
+    mapperLocations: classpath*:mapper/**/*.xml
+    configuration:
+      mapUnderscoreToCamelCase: true
+
+#logger
+logging:
+  file: logs/message.log
+  level:
+    root: info
+    com.fly.caipiao.comment.service: debug
+
+
