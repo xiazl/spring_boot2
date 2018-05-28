@@ -50,7 +50,7 @@ logging:
   file: logs/message.log
   level:
     root: info
-    com.fly.caipiao.comment.service: debug
+    com.fly.caipiao.comment.mapper: debug
 
 
 ---
